@@ -12,6 +12,7 @@ import {
   ExpoSpeechRecognitionModule,
   useSpeechRecognitionEvent,
 } from "expo-speech-recognition";
+import * as Speech from "expo-speech";
 
 export default function App() {
   const [recognizing, setRecognizing] = useState(false);
@@ -28,7 +29,7 @@ export default function App() {
 
   const handleStart = async () => {
     const result = await ExpoSpeechRecognitionModule.requestPermissionsAsync();
-    console.log("Permission result:", result); // Add this line
+    console.log("Permission result:", result);
 
     if (!result.granted) {
       console.warn("Permissions not granted", result);
@@ -40,6 +41,14 @@ export default function App() {
       interimResults: true,
       continuous: false,
     });
+  };
+  const speak = () => {
+    let thingToSay = transcript;
+    if (thingToSay) {
+      Speech.speak(thingToSay);
+    } else {
+      Speech.speak("No speech recognized yet.");
+    }
   };
 
   return (
@@ -55,6 +64,9 @@ export default function App() {
             color="red"
           />
         )}
+      </View>
+      <View style={styles.container}>
+        <Button title="Press to hear some words" onPress={speak} />
       </View>
       <ScrollView contentContainerStyle={styles.transcriptContainer}>
         <Text style={styles.transcriptText}>{transcript}</Text>
